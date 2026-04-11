@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Zetta.Api/Zetta.Api.csproj" />
+    <Project Path="src/Zetta.Application/Zetta.Application.csproj" />
+    <Project Path="src/Zetta.Domain/Zetta.Domain.csproj" />
+    <Project Path="src/Zetta.Infrastructure/Zetta.Infrastructure.csproj" />
+    <Project Path="src/Zetta.SharedKernel/Zetta.SharedKernel.csproj" />
+  </Folder>
+</Solution>
