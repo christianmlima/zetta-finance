@@ -348,7 +348,6 @@ DELETE /accounts/{id}
 GET    /transactions?page&pageSize&from&to&type&categoryId&accountId
 POST   /transactions
 GET    /transactions/{id}
-PUT    /transactions/{id}
 DELETE /transactions/{id}
 
 GET    /categories
@@ -391,7 +390,7 @@ services:
 - [ ] Application: Auth commands/queries
 - [ ] Application: Accounts CRUD
 - [ ] Application: Categories CRUD
-- [ ] Application: Transactions CRUD com filtros
+- [ ] Application: Transactions (criar, cancelar, consultar com filtros)
 - [ ] Web: endpoints Minimal API + JWT middleware
 - [ ] Docker Compose básico
 
