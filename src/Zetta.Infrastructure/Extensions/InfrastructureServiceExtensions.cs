@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Zetta.Application.Common.Interfaces;
 using Zetta.Domain.Interfaces;
+using Zetta.Infrastructure.Identity;
+using Zetta.Infrastructure.Identity.Settings;
 using Zetta.Infrastructure.Persistence;
 using Zetta.Infrastructure.Persistence.Repositories;
 
@@ -19,6 +22,10 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+        services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         return services;
     }
