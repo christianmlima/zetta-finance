@@ -1,0 +1,90 @@
+services:
+  api:
+    build:
+      context: ./src
+      dockerfile: Zetta.Api/Dockerfile
+    container_name: zetta-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=zetta_finance;Username=postgres;Password=postgres
+      - Jwt__SecretKey=change-this-secret-key-in-production-min-32-chars
+      - Jwt__Issuer=zetta-finance
+      - Jwt__Audience=zetta-finance
+      - Jwt__ExpirationMinutes=60
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - zetta-net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: zetta-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: zetta_finance
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - zetta-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: zetta-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - zetta-net
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: zetta-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - zetta-net
+
+volumes:
+  postgres-data:
+  redis-data:
+  rabbitmq-data:
+
+networks:
+  zetta-net:
+    driver: bridge
